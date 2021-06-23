@@ -1,0 +1,37 @@
+.App {
+  text-align: center;
+}
+
+.App .date {
+  font-size: 1.5em;
+}
+
+.App .explanation {
+  margin: 0 auto;
+  padding: 40px 0;
+  max-width: 80%;
+  text-align: left;
+}
+
+.App .explanation a {
+  text-decoration: none;
+}
+
+.App .navigation {
+  display: flex;
+  justify-content: space-evenly;
+  min-width: 80%;
+  margin-bottom: 60px;
+}
+
+.App .navigation a {
+  padding: 8px 24px;
+  color: white;
+  border-radius: 32px;
+  background-color: rgb(77, 134, 240);
+  text-decoration: none;
+}
+
+.App .footer {
+  margin-bottom: 24px;
+}
