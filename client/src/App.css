@@ -17,14 +17,14 @@
   text-decoration: none;
 }
 
-.App .navigation {
+.App .Navigation {
   display: flex;
   justify-content: space-evenly;
   min-width: 80%;
   margin-bottom: 60px;
 }
 
-.App .navigation a {
+.App .Navigation a {
   padding: 8px 24px;
   color: white;
   border-radius: 32px;

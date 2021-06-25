@@ -2,28 +2,16 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
 import htmlToReact from "html-react-parser";
-import getItems from "./getItems"
+import getItems from "./getItems";
+import Navigation from "./components/Navigation";
 
 function App() {
-  const parser = new DOMParser();
-
   const [image, setImage] = useState("");
   const [explanation, setExplanation] = useState("");
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [prevImage, setPrevImage] = useState("");
   const [nextImage, setNextImage] = useState("");
-
-  const fetch = async (url) => {
-    axios
-      .post("http://localhost:5000/apod", { url: url })
-      .then((res) => {
-        let doc = parser.parseFromString(res.data, "text/html");
-        let items = getItems(doc);
-        setState(items);
-      })
-      .catch((err) => console.log(err));
-  };
 
   const setState = (items) => {
     setImage(htmlToReact(items.img));
@@ -34,12 +22,28 @@ function App() {
     setPrevImage(items.prev);
   };
 
+  const fetch = (url) => axios.post("http://localhost:5000/apod", { url: url }).then((res) => res.data);
+
   const handleClick = (e) => {
     e.preventDefault();
-    fetch(e.target.getAttribute("href"));
+    
+    fetch(e.target.getAttribute("href"))
+      .then(parseData).then(getItems).then(setState)
+      .catch((err) => console.log(err))
+      .finally(window.scrollTo(0,0))
   };
 
-  useEffect(() => fetch("https://apod.nasa.gov/apod/"), []); //Call fetch only one time when page initially loads
+  const parser = new DOMParser();
+  const parseData = (data) => parser.parseFromString(data, "text/html");
+  
+  //Call fetch only one time when page initially loads
+  useEffect(
+    () =>
+      fetch("https://apod.nasa.gov/apod/")
+        .then(parseData).then(getItems).then(setState)
+        .catch((err) => console.log(err)),
+    []
+  ); 
 
   return (
     <div className="App">
@@ -48,14 +52,7 @@ function App() {
       <div className="image">{image}</div>
       <div className="title">{title}</div>
       <p className="explanation">{explanation}</p>
-      <div className="navigation">
-        <a href={prevImage} onClick={handleClick}>
-          Previous
-        </a>
-        <a href={nextImage} onClick={handleClick}>
-          Next
-        </a>
-      </div>
+      <Navigation nextImage={nextImage} prevImage={prevImage} handleClick={handleClick} />
       <div className="footer">
         All data presented is courtesy of <a href="https://apod.nasa.gov/apod/">NASA's APOD</a> and the respective
         copyright owners.
