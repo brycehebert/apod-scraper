@@ -1,6 +1,6 @@
 ## APOD
 
-A little project that acts as a web scraper. It pulls and displays images from NASA's [Astronomy Picture of the Day](https://apod.nasa.gov/apod/).
+A little project that pulls and displays images from NASA's [Astronomy Picture of the Day](https://apod.nasa.gov/apod/).
 
 This Project Utilizes [Node.JS](https://nodejs.org/), [Express](https://expressjs.com/), and [React](https://reactjs.org/) as well as various helper modules.
 
