@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const fetch = require("node-fetch");
 
-app.use(cors());
+app.use(cors({methods: "POST"}));
 app.use(express.json());
 
 app.post("/apod", (req, res) => {
