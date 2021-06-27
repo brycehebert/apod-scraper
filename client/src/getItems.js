@@ -1,3 +1,5 @@
+import htmlToReact from "html-react-parser";
+
 const getItems = (doc) => {
   let items = {};
 
@@ -7,16 +9,17 @@ const getItems = (doc) => {
   //If still nothing, we just don't get to see that day's image.
   if (doc.getElementsByTagName("img")[0]) {
     let element = doc.getElementsByTagName("img")[0];
-    items.img = `<img src=https://apod.nasa.gov/apod/${element.getAttribute("src")} alt="${element.getAttribute("alt")}" />`;
+    items.image = `<img src=https://apod.nasa.gov/apod/${element.getAttribute("src")} alt="${element.getAttribute("alt")}" />`;
   } else if (doc.getElementsByTagName("iframe")[0]) {
-    items.img = doc.getElementsByTagName("iframe")[0].outerHTML;
+    items.image = doc.getElementsByTagName("iframe")[0].outerHTML;
   } else {
-    items.img = "";
+    items.image = "";
   }
+  items.image = htmlToReact(items.image);
 
   items.date = `${doc.getElementsByTagName("p")[1].innerText}`;
 
-  items.title = `${doc.getElementsByTagName("center")[1].innerHTML}`;
+  items.title =htmlToReact(`${doc.getElementsByTagName("center")[1].innerHTML}`);
 
   //Fix any links in explanation that have a relative path to have an absolute path to the APOD website
   //First we grab all the anchor tags in the explanation paragraph
@@ -28,12 +31,12 @@ const getItems = (doc) => {
       ele.setAttribute("href", `https://apod.nasa.gov/apod/${link}`);
     }
   });
-  items.explain = `${doc.getElementsByTagName("p")[2].innerHTML}`;
+  items.explanation = htmlToReact(`${doc.getElementsByTagName("p")[2].innerHTML}`);
 
-  items.prev =
+  items.prevImage =
     "https://apod.nasa.gov/apod/" +
     [...doc.getElementsByTagName("a")].filter((ele) => ele.innerText === "<")[0].getAttribute("href");
-  items.next =
+  items.nextImage =
     "https://apod.nasa.gov/apod/" +
     [...doc.getElementsByTagName("a")].filter((ele) => ele.innerText === ">")[0].getAttribute("href");
 
