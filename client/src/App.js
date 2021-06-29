@@ -1,38 +1,8 @@
-import { useState, useEffect } from "react";
 import "./App.css";
-import axios from "axios";
-import getItems from "./getItems";
 import Navigation from "./components/Navigation";
 
-const fetch = (url) => axios.post("http://localhost:5000/apod", { url: url }).then((res) => res.data);
-
-const parser = new DOMParser();
-const parseData = (data) => parser.parseFromString(data, "text/html");
-
-function App() {
-  const [state, setState] = useState({ image: "", explanation: "", title: "", date: "", prevImage: "", nextImage: "" });
-
-  const handleClick = (e) => {
-    e.preventDefault();
-
-    fetch(e.target.getAttribute("href"))
-      .then(parseData)
-      .then(getItems)
-      .then(setState)
-      .catch((err) => console.log(err))
-      .finally(window.scrollTo(0, 0));
-  };
-
-  //Call fetch only one time when page initially loads
-  useEffect(
-    () =>
-      fetch("https://apod.nasa.gov/apod/")
-        .then(parseData)
-        .then(getItems)
-        .then(setState)
-        .catch((err) => console.log(err)),
-    []
-  );
+function App(props) {
+  const { state, handleClick } = props;
 
   return (
     <div className="App">
