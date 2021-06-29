@@ -1,5 +1,16 @@
 import htmlToReact from "html-react-parser";
 
+//Fix any links that have a relative path to have an absolute path to the APOD website
+//Search for any anchor tag with an href that doesn't begin with http and prepend the APOD url to it.
+const fixRelativeLinks = (links) => {
+  links.forEach(ele => {
+    let link = ele.getAttribute("href");
+    if (!link.startsWith("http")){
+      ele.setAttribute("href", `https://apod.nasa.gov/apod/${link}`);
+    }
+  })
+}
+
 const getItems = (doc) => {
   let items = {};
 
@@ -19,23 +30,19 @@ const getItems = (doc) => {
 
   items.date = `${doc.getElementsByTagName("p")[1].innerText}`;
 
-  items.title =htmlToReact(`${doc.getElementsByTagName("center")[1].innerHTML}`);
-
-  //Fix any links in explanation that have a relative path to have an absolute path to the APOD website
-  //First we grab all the anchor tags in the explanation paragraph
-  //We convert the resulting HTMLCollection to an array using [...] so that we can run Array.forEach() on it
-  //Then we just search for any anchor tag with an href that doesn't begin with http and prepend the APOD url to it.
-  [...doc.getElementsByTagName("p")[2].getElementsByTagName("a")].forEach((ele) => {
-    const link = ele.getAttribute("href");
-    if (!link.startsWith("http")) {
-      ele.setAttribute("href", `https://apod.nasa.gov/apod/${link}`);
-    }
-  });
+  //Grab all the anchor tags in the explanation paragraph
+  //Convert the resulting HTMLCollection to an array using [...] so that we can run Array.forEach() on it
+  fixRelativeLinks([...doc.getElementsByTagName("p")[2].getElementsByTagName("a")]);
   items.explanation = htmlToReact(`${doc.getElementsByTagName("p")[2].innerHTML}`);
+
+  //Do the same for the image title/credit
+  fixRelativeLinks([...doc.getElementsByTagName("center")[1].getElementsByTagName("a")]);
+  items.title = htmlToReact(`${doc.getElementsByTagName("center")[1].innerHTML}`);
 
   items.prevImage =
     "https://apod.nasa.gov/apod/" +
     [...doc.getElementsByTagName("a")].filter((ele) => ele.innerText === "<")[0].getAttribute("href");
+    
   items.nextImage =
     "https://apod.nasa.gov/apod/" +
     [...doc.getElementsByTagName("a")].filter((ele) => ele.innerText === ">")[0].getAttribute("href");
