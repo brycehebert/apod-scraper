@@ -3,7 +3,9 @@ import axios from "axios";
 import getItems from "./getItems";
 import App from "./App";
 
-const fetch = (url) => axios.post("http://localhost:5000/apod", { url: url }).then((res) => res.data);
+let baseURL = process.env.NODE_ENV === 'development' ? "http://localhost:5000" : "https://apod-remake.herokuapp.com"
+
+const fetch = (url) => axios.post(baseURL + "/apod", { url: url }).then((res) => res.data);
 
 const parser = new DOMParser();
 const parseData = (data) => parser.parseFromString(data, "text/html");
